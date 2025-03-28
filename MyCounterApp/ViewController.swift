@@ -39,32 +39,58 @@ class ViewController: UIViewController {
     // StackView를 만드는 함수
     private func setStackView() {
         
-        let elements = ["7", "8", "9", "+"]
+        // 배열 안에 또 배열이 들어가 있는 2차원 배열(2D Array) 구조
+        let rows = [
+            ["7", "8", "9", "+"],
+            ["4", "5", "6", "-"],
+            ["1", "2", "3", "*"],
+            ["AC", "0", "=", "/"]
+        ]
         
-        let buttons = elements.map { element -> UIButton in
-            let button = UIButton()
-            
-            button.setTitle(element, for: .normal)
-            button.titleLabel?.font = .boldSystemFont(ofSize: 30)
-            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
-            button.layer.cornerRadius = 40
-            
-            button.snp.makeConstraints {
-                $0.height.width.equalTo(80)
+        // verticalStackView 생성
+        let verticalStackView = UIStackView()
+        verticalStackView.axis = .vertical
+        verticalStackView.backgroundColor = .black
+        verticalStackView.spacing = 10
+        verticalStackView.distribution = .fillEqually
+        
+        // rows의 각 줄을 horizontalSV로 만들고 verticalSV에 추가
+        for row in rows {
+            let buttons = row.map { element -> UIButton in
+                let button = UIButton()
+                
+                button.setTitle(element, for: .normal)
+                button.titleLabel?.font = .boldSystemFont(ofSize: 30)
+                button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+                button.layer.cornerRadius = 40
+                
+                button.snp.makeConstraints {
+                    $0.height.width.equalTo(80)
+                }
+                return button
             }
-            return button
+            
+            // horizontalSV 생성 함수 호출
+            let horizontalStackView = makeHorizontalStackView(buttons)
+            // horizontalSV를 verticalSV에 자동으로 정렬
+            verticalStackView.addArrangedSubview(horizontalStackView)
+            
+            // horizontalSV에 들어있는 button 크기가 고정되어 있기 때문에 생략해도 동작함
+            horizontalStackView.snp.makeConstraints {
+                $0.height.equalTo(80)
+            }
         }
         
-        // horizontalStackView 생성 함수 호출
-        let horizontalStackView = makeHorizontalStackView(buttons)
+        // 뷰에 verticalStackView 노출
+        view.addSubview(verticalStackView)
         
-        // 뷰에 horizontalStackView 노출
-        view.addSubview(horizontalStackView)
-        
-        // 제약 조건에서 위치를 설정할 때는(ex. equalToSuperView) SuperView가 정의되어 있어야하므로 view.addSubview(horizontalStackView) 밑에 작성
-        horizontalStackView.snp.makeConstraints {
-            $0.height.equalTo(80)
+        // 제약 조건에서 위치를 설정할 때는(ex. equalToSuperView) SuperView가 정의되어 있어야하므로 view.addSubview(verticalStackView) 밑에 작성
+        verticalStackView.snp.makeConstraints {
+            $0.width.equalTo(350)
+            $0.top.equalTo(label.snp.bottom).offset(60)
+            $0.centerX.equalToSuperview()
         }
+
     }
     
     // [UIView] 타입의 views를 받아 UIStackView로 반환 -> buttons를 파라미터로 받아 stackView로 만들어주는 함수
