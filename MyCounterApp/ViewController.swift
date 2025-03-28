@@ -61,11 +61,19 @@ class ViewController: UIViewController {
                 
                 button.setTitle(element, for: .normal)
                 button.titleLabel?.font = .boldSystemFont(ofSize: 30)
-                button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+                
+                // button의 height/width는 80이며, 정사각형일 때는 모서리 반경(= cornerRadius)을 1/2로 설정하면 원형이 됨
                 button.layer.cornerRadius = 40
                 
                 button.snp.makeConstraints {
                     $0.height.width.equalTo(80)
+                }
+                
+                // 연산자를 orange 색으로 변경
+                if Int(element) != nil {
+                    button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+                } else {
+                    button.backgroundColor = .orange
                 }
                 return button
             }
@@ -102,5 +110,9 @@ class ViewController: UIViewController {
         stackView.distribution = .fillEqually
         
         return stackView
+    }
+    
+    private func makeButton() {
+        
     }
 }
