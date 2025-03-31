@@ -18,9 +18,12 @@ class ViewController: UIViewController {
     
     // UI를 설정해주는 함수
     private func configureUI() {
+        // 초기값을 0으로 설정
+        let defaultValue = 0
+        
         view.backgroundColor = .black
         label.textColor = .white
-        label.text = "12345"
+        label.text = "\(defaultValue)"
         label.textAlignment = .right
         label.font = .boldSystemFont(ofSize: 60)
         
@@ -65,10 +68,18 @@ class ViewController: UIViewController {
                 // button의 height/width는 80이며, 정사각형일 때는 모서리 반경(= cornerRadius)을 1/2로 설정하면 원형이 됨
                 button.layer.cornerRadius = 40
                 
+                // height/width를 합쳐서 size로 쓸 수 있음
                 button.snp.makeConstraints {
-                    $0.height.width.equalTo(80)
+                    $0.size.equalTo(80)
                 }
                 
+                // 버튼 클릭 시 조건에 따라 ButtonTapped 함수 실행
+                if element == "AC" {
+                    button.addTarget(self, action: #selector(resetButtonTapped), for: .touchDown)
+                } else {
+                    button.addTarget(self, action: #selector(buttonTapped), for: .touchDown)
+                }
+
                 // 연산자를 orange 색으로 변경
                 if Int(element) != nil {
                     button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
@@ -112,7 +123,14 @@ class ViewController: UIViewController {
         return stackView
     }
     
-    private func makeButton() {
-        
+    @objc
+    private func buttonTapped() {
+        label.text = "1"
+    }
+    
+    @objc
+    private func resetButtonTapped() {
+        let resetValue = 0
+        label.text = "\(resetValue)"
     }
 }
