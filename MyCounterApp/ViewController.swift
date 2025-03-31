@@ -76,8 +76,11 @@ class ViewController: UIViewController {
                 // 버튼 클릭 시 조건에 따라 ButtonTapped 함수 실행
                 if element == "AC" {
                     button.addTarget(self, action: #selector(resetButtonTapped), for: .touchDown)
+                } else if element == "=" {
+                    button.addTarget(self, action: #selector(calculateButtonTapped), for: .touchDown)
                 } else {
-                    button.addTarget(self, action: #selector(buttonTapped), for: .touchDown)
+                    //(_:) 파라미터가 1개 있는 함수라는 뜻
+                    button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchDown)
                 }
 
                 // 연산자를 orange 색으로 변경
@@ -123,14 +126,42 @@ class ViewController: UIViewController {
         return stackView
     }
     
+    // 버튼 클릭 시 label text 변경
     @objc
-    private func buttonTapped() {
-        label.text = "1"
+    private func buttonTapped(_ sender: UIButton) {
+        // currentTitle(UIButton의 프로퍼티)이 옵셔널 String 타입이기 때문에 guard let으로 값을 안전하게 꺼냄
+        guard let title = sender.currentTitle else { return }
+        
+        // 맨 앞자리 0 제거
+        if label.text == "0" {
+            label.text = "\(title)"
+        } else {
+            label.text?.append(title)
+        }
     }
     
+    // AC 버튼 클릭 시 값을 0으로 초기화
     @objc
     private func resetButtonTapped() {
         let resetValue = 0
         label.text = "\(resetValue)"
+    }
+    
+    // = 버튼 클릭 시 label.text를 calculate 함수의 string으로 받아 계산된 값으로 할당
+    @objc
+    private func calculateButtonTapped() {
+        guard let expression = label.text,
+              let result = calculate(expression: expression) else { return }
+        label.text = "\(result)"
+    }
+    
+    // 제공된 연산 메서드 -> String 값 필요
+    func calculate(expression: String) -> Int? {
+        let expression = NSExpression(format: expression)
+        if let result = expression.expressionValue(with: nil, context: nil) as? Int {
+            return result
+        } else {
+            return nil
+        }
     }
 }
