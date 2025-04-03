@@ -151,17 +151,7 @@ class ViewController: UIViewController {
     @objc
     private func calculateButtonTapped() {
         guard let expression = label.text,
-              let result = calculate(expression: expression) else { return }
+              let result = Calculator.calculate(expression: expression) else { return }
         label.text = "\(result)"
-    }
-    
-    // 제공된 연산 메서드 -> String 값 필요
-    func calculate(expression: String) -> Int? {
-        let expression = NSExpression(format: expression)
-        if let result = expression.expressionValue(with: nil, context: nil) as? Int {
-            return result
-        } else {
-            return nil
-        }
     }
 }
